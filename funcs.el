@@ -27,7 +27,7 @@
   (defun jg-spacemacs-twitter/twitter-tweet ()
     """ Actually tweet """
     (interactive)
-    (jg-spacemacs-twitter/twitter-tweet-text (buffer-string) (buffer-local-variables) '(jg_twitter/tweet_sentinel))
+    (jg-spacemacs-twitter/twitter-tweet-text (buffer-string) (buffer-local-variables) '(jg-spacemacs-twitter/tweet_sentinel))
     )
 
   (defun jg-spacemacs-twitter/twitter-tweet-text (text &optional locals sentinels)
@@ -35,7 +35,7 @@
       (if (assq 'media_id locals)
           (setq cmd (format "%s&media_ids=%s" cmd (cdr (assq 'media_id locals)))))
 
-      (start-process jg-spacemacs-twitter/twurl_proc_name jg_twitter/twurl_buff_name
+      (start-process jg-spacemacs-twitter/twurl_proc_name jg-spacemacs-twitter/twurl_buff_name
                      jg-spacemacs-twitter/twurl_command_name  "-d" (format "%s" cmd) "-X" "POST" "-H"
                      jg-spacemacs-twitter/twurl_default_host
                      jg-spacemacs-twitter/twurl_tweet)
@@ -71,10 +71,10 @@
           (with-current-buffer (get-buffer-create jg-spacemacs-twitter/twurl_buff_name)
             (erase-buffer)
             (beginning-of-buffer)
-            (start-process jg-spacemacs-twitter/twurl_proc_name jg_twitter/twurl_buff_name
+            (start-process jg-spacemacs-twitter/twurl_proc_name jg-spacemacs-twitter/twurl_buff_name
                            "twurl" "-H" jg-spacemacs-twitter/twurl_media_host
                            jg-spacemacs-twitter/twurl_upload "-d" cmd)
-            (set-process-sentinel (get-process jg-spacemacs-twitter/twurl_proc_name) 'jg_twitter/sentinel_upload)
+            (set-process-sentinel (get-process jg-spacemacs-twitter/twurl_proc_name) 'jg-spacemacs-twitter/sentinel_upload)
             )
           )
         )
@@ -89,18 +89,18 @@
            (cmd (format "command=%s&media_id=%s&segment_index=0" "APPEND" media_str))
            )
       (setq jg-spacemacs-twitter/twurl_media_id media_str)
-      (start-process jg-spacemacs-twitter/twurl_proc_name jg_twitter/twurl_buff_name
-                     "twurl" "-H" jg-spacemacs-twitter/twurl_media_host jg_twitter/twurl_upload "-d" cmd "--file" jg_twitter/twurl_file "--file-field" "media")
-      (set-process-sentinel (get-process jg-spacemacs-twitter/twurl_proc_name) 'jg_twitter/sentinel_final)
+      (start-process jg-spacemacs-twitter/twurl_proc_name jg-spacemacs-twitter/twurl_buff_name
+                     "twurl" "-H" jg-spacemacs-twitter/twurl_media_host jg-spacemacs-twitter/twurl_upload "-d" cmd "--file" jg-spacemacs-twitter/twurl_file "--file-field" "media")
+      (set-process-sentinel (get-process jg-spacemacs-twitter/twurl_proc_name) 'jg-spacemacs-twitter/sentinel_final)
       )
     )
 
   (defun jg-spacemacs-twitter/sentinel_final (&rest args)
     """ Finalize the upload """
     (let* ((cmd (format "command=%s&media_id=%s" "FINALIZE" jg-spacemacs-twitter/twurl_media_id)))
-      (start-process jg-spacemacs-twitter/twurl_proc_name jg_twitter/twurl_buff_name
-                     "twurl" "-H" jg-spacemacs-twitter/twurl_media_host jg_twitter/twurl_upload "-d" cmd)
-      (set-process-sentinel (get-process jg-spacemacs-twitter/twurl_proc_name) 'jg_twitter/add_media_id_to_tweet)
+      (start-process jg-spacemacs-twitter/twurl_proc_name jg-spacemacs-twitter/twurl_buff_name
+                     "twurl" "-H" jg-spacemacs-twitter/twurl_media_host jg-spacemacs-twitter/twurl_upload "-d" cmd)
+      (set-process-sentinel (get-process jg-spacemacs-twitter/twurl_proc_name) 'jg-spacemacs-twitter/add_media_id_to_tweet)
       )
     )
 
